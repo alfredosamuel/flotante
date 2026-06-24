@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imagen Always On Top</title>
+    <title>Imagen/Web Always On Top</title>
     <style>
         :root {
             --bg: #1a1a2e;
@@ -11,6 +11,7 @@
             --surface2: #0f3460;
             --accent: #e94560;
             --accent2: #0ea5e9;
+            --accent3: #8b5cf6;
             --text: #e0e0e0;
             --text2: #a0a0b8;
             --border: #2a2a4a;
@@ -38,30 +39,30 @@
             background-image:
                 radial-gradient(ellipse at 30% 20%, rgba(233, 68, 96, 0.08) 0%, transparent 60%),
                 radial-gradient(ellipse at 70% 60%, rgba(14, 165, 233, 0.06) 0%, transparent 60%),
-                radial-gradient(ellipse at 50% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 50%);
+                radial-gradient(ellipse at 50% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
         }
 
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 680px;
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        /* Header */
         .header {
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
+            flex-wrap: wrap;
         }
         .header .icon {
             width: 44px;
             height: 44px;
             border-radius: 14px;
-            background: linear-gradient(135deg, var(--accent), #c0392b);
+            background: linear-gradient(135deg, var(--accent), var(--accent3));
             display: flex;
             align-items: center;
             justify-content: center;
@@ -87,28 +88,33 @@
             animation: pulse-badge 2s infinite;
         }
         @keyframes pulse-badge {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.7;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
-        /* Drop Zone */
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+            letter-spacing: 0.3px;
+        }
+
         .drop-zone {
             background: var(--surface);
             border: 2.5px dashed var(--border);
             border-radius: var(--radius);
-            padding: 40px 20px;
+            padding: 36px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
             box-shadow: var(--shadow);
-            min-height: 200px;
+            min-height: 180px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -128,21 +134,16 @@
             animation: glow-border 0.8s ease-in-out infinite;
         }
         @keyframes glow-border {
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.3);
-            }
-            50% {
-                box-shadow: 0 0 0 18px rgba(34, 197, 94, 0);
-            }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.3); }
+            50% { box-shadow: 0 0 0 18px rgba(34, 197, 94, 0); }
         }
         .drop-zone .drop-icon {
-            font-size: 48px;
+            font-size: 42px;
             opacity: 0.7;
             pointer-events: none;
         }
         .drop-zone .drop-text {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--text2);
             pointer-events: none;
             line-height: 1.5;
@@ -162,7 +163,40 @@
             pointer-events: none;
         }
 
-        /* Preview */
+        .url-input-group {
+            display: flex;
+            gap: 10px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+        .url-input-group input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .url-input-group input:focus {
+            border-color: var(--accent3);
+        }
+        .url-input-group input::placeholder {
+            color: var(--text2);
+            opacity: 0.6;
+        }
+        .url-input-group button {
+            white-space: nowrap;
+        }
+
         .preview-area {
             display: none;
             background: var(--surface);
@@ -176,14 +210,8 @@
             display: block;
         }
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .preview-header {
             display: flex;
@@ -201,30 +229,9 @@
             align-items: center;
             gap: 6px;
         }
-        .preview-title .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #22c55e;
-            animation: pulse-dot 1.5s infinite;
-        }
-        @keyframes pulse-dot {
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
-            }
-            50% {
-                box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
-            }
-        }
-        .preview-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
         .preview-img-wrap {
             width: 100%;
-            max-height: 280px;
+            max-height: 220px;
             overflow: hidden;
             border-radius: 10px;
             background: #000;
@@ -237,30 +244,11 @@
         }
         .preview-img-wrap img {
             max-width: 100%;
-            max-height: 280px;
+            max-height: 220px;
             object-fit: contain;
             display: block;
         }
-        .preview-img-wrap:hover .preview-overlay {
-            opacity: 1;
-        }
-        .preview-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            border-radius: 10px;
-            pointer-events: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            gap: 6px;
-        }
 
-        /* Buttons */
         .btn {
             padding: 10px 18px;
             border-radius: 10px;
@@ -276,71 +264,39 @@
             letter-spacing: 0.2px;
             white-space: nowrap;
         }
-        .btn:active {
-            transform: scale(0.95);
-        }
+        .btn:active { transform: scale(0.95); }
         .btn-primary {
             background: var(--accent);
             color: #fff;
             box-shadow: 0 4px 18px rgba(233, 68, 96, 0.4);
         }
-        .btn-primary:hover {
-            background: #ff5a75;
-            box-shadow: 0 6px 24px rgba(233, 68, 96, 0.55);
-            transform: translateY(-1px);
-        }
+        .btn-primary:hover { background: #ff5a75; transform: translateY(-1px); }
         .btn-secondary {
             background: var(--surface2);
             color: var(--text);
             border: 1px solid var(--border);
         }
-        .btn-secondary:hover {
-            background: #1a4080;
-            border-color: var(--accent2);
-        }
+        .btn-secondary:hover { background: #1a4080; border-color: var(--accent2); }
         .btn-outline {
             background: transparent;
             color: var(--text2);
             border: 1px solid var(--border);
         }
-        .btn-outline:hover {
-            background: var(--surface2);
-            color: var(--text);
-            border-color: var(--text2);
+        .btn-outline:hover { background: var(--surface2); color: var(--text); }
+        .btn-accent {
+            background: var(--accent3);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
         }
+        .btn-accent:hover { background: #9d74f7; }
         .btn-danger {
             background: transparent;
             color: #f87171;
             border: 1px solid #f8717133;
         }
-        .btn-danger:hover {
-            background: rgba(248, 113, 113, 0.1);
-            border-color: #f87171;
-        }
-        .btn:disabled {
-            opacity: 0.45;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-        .btn-pip {
-            width: 100%;
-            justify-content: center;
-            font-size: 1rem;
-            padding: 14px 20px;
-            border-radius: 14px;
-            animation: subtle-glow 3s infinite;
-        }
-        @keyframes subtle-glow {
-            0%,
-            100% {
-                box-shadow: 0 4px 18px rgba(233, 68, 96, 0.4);
-            }
-            50% {
-                box-shadow: 0 6px 30px rgba(233, 68, 96, 0.7);
-            }
-        }
+        .btn-danger:hover { background: rgba(248, 113, 113, 0.1); }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
 
-        /* Status */
         .status-bar {
             display: flex;
             align-items: center;
@@ -369,17 +325,6 @@
             color: var(--text2);
             border: 1px solid var(--border);
         }
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: currentColor;
-        }
-        .status-dot.active {
-            animation: pulse-dot 1.5s infinite;
-        }
-
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -390,916 +335,543 @@
             padding: 12px 24px;
             border-radius: 30px;
             font-weight: 600;
-            font-size: 0.9rem;
             z-index: 9999;
             transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             pointer-events: none;
         }
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-        .toast.error {
-            background: #dc2626;
-        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.error { background: #dc2626; }
 
-        /* Hidden file input */
-        #fileInput {
-            display: none;
-        }
-
-        /* Responsive */
-        @media (max-width: 500px) {
-            .container {
-                gap: 14px;
-            }
-            .drop-zone {
-                padding: 24px 14px;
-                min-height: 150px;
-            }
-            .drop-zone .drop-icon {
-                font-size: 34px;
-            }
-            .btn {
-                padding: 8px 14px;
-                font-size: 0.8rem;
-            }
-            .btn-pip {
-                font-size: 0.9rem;
-                padding: 12px 16px;
-            }
-            .preview-img-wrap {
-                max-height: 180px;
-            }
-            .preview-img-wrap img {
-                max-height: 180px;
-            }
-        }
+        #fileInput { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="icon">🖼️</div>
-            <h1>Imagen <span>Always On Top</span></h1>
-            <span class="badge">PiP</span>
-        </div>
+<div class="container">
+    <div class="header">
+        <div class="icon">🖼️</div>
+        <h1>Always <span>On Top</span></h1>
+        <span class="badge">PiP + Web</span>
+    </div>
 
-        <!-- Drop Zone -->
-        <div class="drop-zone" id="dropZone" title="Arrastra una imagen aquí o haz clic para seleccionar">
-            <div class="drop-icon">📥</div>
-            <div class="drop-text">
-                <strong>Arrastra y suelta</strong> una imagen aquí<br>
-                o pulsa <strong>Ctrl+V</strong> para pegar
-            </div>
-            <div class="drop-hint">También puedes hacer clic para seleccionar un archivo</div>
+    <!-- Zona para imagen -->
+    <div class="section-title">🖼️ Cargar una imagen</div>
+    <div class="drop-zone" id="dropZone" title="Arrastra, pega (Ctrl+V) o haz clic">
+        <div class="drop-icon">📥</div>
+        <div class="drop-text">
+            <strong>Arrastra y suelta</strong> una imagen aquí<br>
+            o pulsa <strong>Ctrl+V</strong> para pegar
         </div>
-        <input type="file" id="fileInput" accept="image/*">
+        <div class="drop-hint">También puedes hacer clic para seleccionar un archivo</div>
+    </div>
+    <input type="file" id="fileInput" accept="image/*">
 
-        <!-- Preview -->
-        <div class="preview-area" id="previewArea">
-            <div class="preview-header">
-                <div class="preview-title">
-                    <span class="dot"></span> Imagen cargada
-                </div>
-                <div class="preview-actions">
-                    <button class="btn btn-outline btn-sm" id="btnChange" title="Cambiar imagen">
-                        🔄 Cambiar
-                    </button>
-                    <button class="btn btn-danger btn-sm" id="btnClear" title="Quitar imagen">
-                        ✕ Quitar
-                    </button>
-                </div>
-            </div>
-            <div class="preview-img-wrap" id="previewImgWrap" title="Haz clic para abrir en ventana flotante">
-                <img id="previewImg" src="" alt="Preview">
-                <div class="preview-overlay">👁️ Abrir siempre visible</div>
+    <!-- Vista previa de imagen -->
+    <div class="preview-area" id="previewArea">
+        <div class="preview-header">
+            <div class="preview-title">✅ Imagen cargada</div>
+            <div style="display: flex; gap: 6px;">
+                <button class="btn btn-outline btn-sm" id="btnChange">🔄 Cambiar</button>
+                <button class="btn btn-danger btn-sm" id="btnClear">✕ Quitar</button>
             </div>
         </div>
-
-        <!-- Botón principal -->
-        <button class="btn btn-primary btn-pip" id="btnOpenPip" disabled>
-            📌 Abrir ventana flotante (siempre visible)
-        </button>
-
-        <!-- Estado -->
-        <div class="status-bar">
-            <span class="status-indicator inactive" id="statusIndicator">
-                <span class="status-dot"></span>
-                <span id="statusText">Sin ventana flotante</span>
-            </span>
-            <button class="btn btn-outline btn-sm" id="btnClosePip" style="display:none;">
-                ❌ Cerrar ventana flotante
-            </button>
+        <div class="preview-img-wrap" id="previewImgWrap" title="Abrir en ventana flotante">
+            <img id="previewImg" src="" alt="Preview">
         </div>
     </div>
 
-    <!-- Toast -->
-    <div class="toast" id="toast"></div>
+    <!-- Zona para URL -->
+    <div class="section-title">🌐 Abrir una página web</div>
+    <div class="url-input-group">
+        <input type="text" id="urlInput" placeholder="https://ejemplo.com" autocomplete="off">
+        <button class="btn btn-accent" id="btnOpenUrl">📌 Abrir web flotante</button>
+    </div>
+    <div style="font-size: 0.75rem; color: var(--text2); margin-top: -12px; opacity: 0.7;">
+        Pega aquí el enlace de la página que quieras tener siempre visible
+    </div>
 
-    <script>
-        (function() {
-            // ============ ELEMENTOS DOM ============
-            const dropZone = document.getElementById('dropZone');
-            const fileInput = document.getElementById('fileInput');
-            const previewArea = document.getElementById('previewArea');
-            const previewImg = document.getElementById('previewImg');
-            const previewImgWrap = document.getElementById('previewImgWrap');
-            const btnOpenPip = document.getElementById('btnOpenPip');
-            const btnChange = document.getElementById('btnChange');
-            const btnClear = document.getElementById('btnClear');
-            const btnClosePip = document.getElementById('btnClosePip');
-            const statusIndicator = document.getElementById('statusIndicator');
-            const statusText = document.getElementById('statusText');
-            const statusDot = statusIndicator.querySelector('.status-dot');
-            const toast = document.getElementById('toast');
+    <!-- Control general -->
+    <button class="btn btn-primary" id="btnOpenPip" disabled style="justify-content:center;">
+        📌 Abrir ventana flotante (imagen actual)
+    </button>
 
-            // ============ ESTADO ============
-            let currentImageBlob = null; // Blob de la imagen actual
-            let currentImageUrl = null; // URL de objeto para preview
-            let pipWindow = null; // Referencia a la ventana PiP
-            let pipImageUrl = null; // URL de objeto dedicada para la PiP
-            let toastTimer = null;
+    <div class="status-bar">
+        <span class="status-indicator inactive" id="statusIndicator">
+            <span class="status-dot"></span>
+            <span id="statusText">Sin ventana flotante</span>
+        </span>
+        <button class="btn btn-outline btn-sm" id="btnClosePip" style="display:none;">❌ Cerrar ventana</button>
+    </div>
+</div>
 
-            // ============ DETECCIÓN DE API PiP ============
-            const supportsPip = ('documentPictureInPicture' in window);
+<div class="toast" id="toast"></div>
 
-            // ============ TOAST ============
-            function showToast(message, isError = false) {
-                if (toastTimer) clearTimeout(toastTimer);
-                toast.textContent = message;
-                toast.className = 'toast ' + (isError ? 'error' : '');
-                // Forzar reflow
-                void toast.offsetWidth;
-                toast.classList.add('show');
-                toastTimer = setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 2800);
-            }
+<script>
+    (function() {
+        // Elementos
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const previewArea = document.getElementById('previewArea');
+        const previewImg = document.getElementById('previewImg');
+        const previewImgWrap = document.getElementById('previewImgWrap');
+        const btnOpenPip = document.getElementById('btnOpenPip');
+        const btnChange = document.getElementById('btnChange');
+        const btnClear = document.getElementById('btnClear');
+        const btnClosePip = document.getElementById('btnClosePip');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        const statusDot = statusIndicator.querySelector('.status-dot');
+        const toast = document.getElementById('toast');
+        const urlInput = document.getElementById('urlInput');
+        const btnOpenUrl = document.getElementById('btnOpenUrl');
 
-            // ============ ACTUALIZAR UI ============
-            function updateUI() {
-                const hasImage = !!currentImageBlob;
-                previewArea.classList.toggle('visible', hasImage);
-                btnOpenPip.disabled = !hasImage;
-                btnClosePip.style.display = pipWindow ? 'inline-flex' : 'none';
+        // Estado
+        let currentImageBlob = null;
+        let currentImageUrl = null;
+        let pipImageUrl = null;
+        let pipWindow = null;
+        let pipMode = 'image'; // 'image' o 'web'
+        let toastTimer = null;
 
-                if (pipWindow) {
-                    statusIndicator.className = 'status-indicator active';
-                    statusDot.className = 'status-dot active';
-                    statusText.textContent = 'Ventana flotante activa';
-                    btnOpenPip.textContent = '🔄 Actualizar ventana flotante';
-                } else {
-                    statusIndicator.className = 'status-indicator inactive';
-                    statusDot.className = 'status-dot';
-                    statusText.textContent = hasImage ? 'Listo para abrir' : 'Sin imagen cargada';
-                    btnOpenPip.textContent = '📌 Abrir ventana flotante (siempre visible)';
-                }
+        const supportsPip = ('documentPictureInPicture' in window);
 
-                if (!supportsPip && hasImage) {
-                    btnOpenPip.title =
-                        'API Picture-in-Picture no disponible. Usa Chrome 116+ o Edge. Se abrirá un popup alternativo.';
-                }
-            }
+        function showToast(message, isError = false) {
+            if (toastTimer) clearTimeout(toastTimer);
+            toast.textContent = message;
+            toast.className = 'toast ' + (isError ? 'error' : '');
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+        }
 
-            // ============ CARGAR IMAGEN ============
-            function loadImageFromBlob(blob) {
-                // Limpiar URLs anteriores
-                if (currentImageUrl) URL.revokeObjectURL(currentImageUrl);
-                if (pipImageUrl) URL.revokeObjectURL(pipImageUrl);
-
-                currentImageBlob = blob;
-                currentImageUrl = URL.createObjectURL(blob);
-                pipImageUrl = URL.createObjectURL(blob); // URL separada para la PiP
-
-                previewImg.src = currentImageUrl;
-                updateUI();
-
-                // Si la PiP está abierta, actualizarla
-                if (pipWindow) {
-                    updatePipImage(pipImageUrl);
-                }
-
-                showToast('✅ Imagen cargada correctamente');
-            }
-
-            function loadImageFromFile(file) {
-                if (!file || !file.type.startsWith('image/')) {
-                    showToast('⚠️ Por favor, selecciona un archivo de imagen válido', true);
-                    return;
-                }
-                loadImageFromBlob(file);
-            }
-
-            async function loadImageFromUrl(url) {
-                try {
-                    // Intentar fetch si es una URL remota (podría fallar por CORS)
-                    const response = await fetch(url, { mode: 'cors' });
-                    if (!response.ok) throw new Error('No se pudo cargar la imagen');
-                    const blob = await response.blob();
-                    if (!blob.type.startsWith('image/')) throw new Error('El recurso no es una imagen');
-                    loadImageFromBlob(blob);
-                } catch (err) {
-                    // Fallback: intentar cargar como imagen directa (el navegador lo maneja)
-                    // Pero necesitamos el blob para la PiP, así que usamos canvas
-                    const img = new Image();
-                    img.crossOrigin = 'anonymous';
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = img.naturalWidth;
-                        canvas.height = img.naturalHeight;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0);
-                        canvas.toBlob(function(blob) {
-                            if (blob) {
-                                loadImageFromBlob(blob);
-                            } else {
-                                showToast('⚠️ No se pudo procesar la imagen', true);
-                            }
-                        }, 'image/png');
-                    };
-                    img.onerror = function() {
-                        showToast('⚠️ No se pudo cargar la imagen desde la URL', true);
-                    };
-                    img.src = url;
-                }
-            }
-
-            // ============ MANEJAR PIP ============
-            function generatePipHTML(imageUrl) {
-                return `
-                <!DOCTYPE html>
-                <html lang="es">
-                <head>
-                  <meta charset="UTF-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <title>Imagen Flotante</title>
-                  <style>
-                    * { margin: 0; padding: 0; box-sizing: border-box; }
-                    html, body {
-                      width: 100%; height: 100%;
-                      overflow: hidden;
-                      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-                      background: #1a1a1a;
-                      user-select: none;
-                      -webkit-user-select: none;
-                    }
-                    /* Fondo checkerboard para zonas transparentes */
-                    .bg-checker {
-                      position: absolute;
-                      inset: 0;
-                      z-index: 0;
-                      background-image:
-                        linear-gradient(45deg, #333 25%, transparent 25%),
-                        linear-gradient(-45deg, #333 25%, transparent 25%),
-                        linear-gradient(45deg, transparent 75%, #333 75%),
-                        linear-gradient(-45deg, transparent 75%, #333 75%);
-                      background-size: 24px 24px;
-                      background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
-                      opacity: 0.5;
-                    }
-                    .main-container {
-                      position: relative;
-                      z-index: 1;
-                      width: 100%;
-                      height: 100%;
-                      display: flex;
-                      flex-direction: column;
-                      overflow: hidden;
-                    }
-                    .image-area {
-                      flex: 1;
-                      overflow: hidden;
-                      cursor: grab;
-                      position: relative;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                    }
-                    .image-area:active { cursor: grabbing; }
-                    .image-area.grabbing { cursor: grabbing; }
-                    #pipImage {
-                      display: block;
-                      transform-origin: center center;
-                      transition: opacity 0.2s ease;
-                      pointer-events: none;
-                      max-width: none;
-                      max-height: none;
-                    }
-                    /* Barra de controles */
-                    .controls {
-                      display: flex;
-                      align-items: center;
-                      gap: 6px;
-                      padding: 8px 10px;
-                      background: rgba(30, 30, 40, 0.95);
-                      border-top: 1px solid rgba(255,255,255,0.08);
-                      flex-wrap: wrap;
-                      justify-content: center;
-                      z-index: 10;
-                      backdrop-filter: blur(10px);
-                      -webkit-backdrop-filter: blur(10px);
-                    }
-                    .ctrl-btn {
-                      width: 32px;
-                      height: 32px;
-                      border-radius: 8px;
-                      border: 1px solid rgba(255,255,255,0.15);
-                      background: rgba(255,255,255,0.06);
-                      color: #ddd;
-                      cursor: pointer;
-                      font-size: 16px;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      transition: all 0.2s ease;
-                      font-family: inherit;
-                      line-height: 1;
-                    }
-                    .ctrl-btn:hover {
-                      background: rgba(255,255,255,0.15);
-                      border-color: rgba(255,255,255,0.3);
-                      color: #fff;
-                    }
-                    .ctrl-btn:active { transform: scale(0.9); }
-                    .ctrl-btn.fit-btn {
-                      width: auto;
-                      padding: 0 10px;
-                      font-size: 12px;
-                      font-weight: 600;
-                      gap: 4px;
-                      letter-spacing: 0.3px;
-                    }
-                    .ctrl-btn.close-btn {
-                      background: rgba(233,68,96,0.2);
-                      border-color: rgba(233,68,96,0.4);
-                      color: #f87171;
-                      font-weight: bold;
-                      font-size: 14px;
-                    }
-                    .ctrl-btn.close-btn:hover {
-                      background: rgba(233,68,96,0.4);
-                      color: #fff;
-                    }
-                    .zoom-label {
-                      font-size: 11px;
-                      color: #aaa;
-                      min-width: 40px;
-                      text-align: center;
-                      font-weight: 600;
-                      letter-spacing: 0.5px;
-                    }
-                    .opacity-group {
-                      display: flex;
-                      align-items: center;
-                      gap: 5px;
-                      margin-left: 4px;
-                    }
-                    .opacity-label {
-                      font-size: 10px;
-                      color: #999;
-                      font-weight: 600;
-                      letter-spacing: 0.3px;
-                    }
-                    #opacitySlider {
-                      width: 70px;
-                      accent-color: #e94560;
-                      cursor: pointer;
-                    }
-                    .divider {
-                      width: 1px;
-                      height: 20px;
-                      background: rgba(255,255,255,0.1);
-                      margin: 0 4px;
-                    }
-                    @media (max-width: 350px) {
-                      .controls { gap: 3px; padding: 6px; }
-                      .ctrl-btn { width: 26px; height: 26px; font-size: 13px; border-radius: 6px; }
-                      #opacitySlider { width: 50px; }
-                      .zoom-label { font-size: 10px; min-width: 30px; }
-                    }
-                  </style>
-                </head>
-                <body>
-                  <div class="bg-checker"></div>
-                  <div class="main-container">
-                    <div class="image-area" id="imageArea">
-                      <img id="pipImage" src="${imageUrl}" alt="Imagen flotante" draggable="false">
-                    </div>
-                    <div class="controls">
-                      <button class="ctrl-btn" id="btnZoomOut" title="Reducir zoom">−</button>
-                      <span class="zoom-label" id="zoomLabel">100%</span>
-                      <button class="ctrl-btn" id="btnZoomIn" title="Aumentar zoom">+</button>
-                      <button class="ctrl-btn fit-btn" id="btnFit" title="Ajustar a la ventana">⊞ Ajustar</button>
-                      <span class="divider"></span>
-                      <div class="opacity-group">
-                        <span class="opacity-label">Opac.</span>
-                        <input type="range" id="opacitySlider" min="10" max="100" value="100" title="Opacidad de la imagen">
-                      </div>
-                      <span class="divider"></span>
-                      <button class="ctrl-btn close-btn" id="btnClosePipWindow" title="Cerrar ventana flotante">✕</button>
-                    </div>
-                  </div>
-                  <script>
-                    // ===== ESTADO INTERNO =====
-                    const img = document.getElementById('pipImage');
-                    const imageArea = document.getElementById('imageArea');
-                    const zoomLabel = document.getElementById('zoomLabel');
-                    const opacitySlider = document.getElementById('opacitySlider');
-                    let currentScale = 1;
-                    let translateX = 0;
-                    let translateY = 0;
-                    let isDragging = false;
-                    let dragStartX = 0;
-                    let dragStartY = 0;
-                    let dragStartTranslateX = 0;
-                    let dragStartTranslateY = 0;
-                    let fittedScale = 1;
-                    let fittedTranslateX = 0;
-                    let fittedTranslateY = 0;
-
-                    // ===== APLICAR TRANSFORMACIÓN =====
-                    function applyTransform() {
-                      img.style.transform = \`translate(\${translateX}px, \${translateY}px) scale(\${currentScale})\`;
-                      zoomLabel.textContent = Math.round(currentScale * 100) + '%';
-                    }
-
-                    // ===== AJUSTAR A LA VENTANA =====
-                    function fitToWindow() {
-                      const areaW = imageArea.clientWidth;
-                      const areaH = imageArea.clientHeight;
-                      const imgNaturalW = img.naturalWidth || img.width;
-                      const imgNaturalH = img.naturalHeight || img.height;
-                      if (imgNaturalW === 0 || imgNaturalH === 0) {
-                        fittedScale = 1;
-                        fittedTranslateX = 0;
-                        fittedTranslateY = 0;
-                      } else {
-                        const scaleX = (areaW * 0.9) / imgNaturalW;
-                        const scaleY = (areaH * 0.9) / imgNaturalH;
-                        fittedScale = Math.min(scaleX, scaleY, 1);
-                        fittedTranslateX = 0;
-                        fittedTranslateY = 0;
-                      }
-                      currentScale = fittedScale;
-                      translateX = fittedTranslateX;
-                      translateY = fittedTranslateY;
-                      applyTransform();
-                    }
-
-                    // ===== ZOOM =====
-                    function zoomIn() {
-                      currentScale = Math.min(currentScale * 1.25, 10);
-                      applyTransform();
-                    }
-                    function zoomOut() {
-                      currentScale = Math.max(currentScale / 1.25, 0.1);
-                      applyTransform();
-                    }
-
-                    // ===== EVENTOS DE MOUSE PARA ARRASTRAR =====
-                    imageArea.addEventListener('mousedown', function(e) {
-                      if (e.target === img || e.target === imageArea) {
-                        isDragging = true;
-                        dragStartX = e.clientX;
-                        dragStartY = e.clientY;
-                        dragStartTranslateX = translateX;
-                        dragStartTranslateY = translateY;
-                        imageArea.classList.add('grabbing');
-                        e.preventDefault();
-                      }
-                    });
-                    window.addEventListener('mousemove', function(e) {
-                      if (!isDragging) return;
-                      translateX = dragStartTranslateX + (e.clientX - dragStartX);
-                      translateY = dragStartTranslateY + (e.clientY - dragStartY);
-                      applyTransform();
-                    });
-                    window.addEventListener('mouseup', function() {
-                      if (isDragging) {
-                        isDragging = false;
-                        imageArea.classList.remove('grabbing');
-                      }
-                    });
-
-                    // ===== EVENTOS TÁCTILES =====
-                    let pinchStartDist = 0;
-                    let pinchStartScale = 1;
-                    imageArea.addEventListener('touchstart', function(e) {
-                      if (e.touches.length === 1) {
-                        isDragging = true;
-                        dragStartX = e.touches[0].clientX;
-                        dragStartY = e.touches[0].clientY;
-                        dragStartTranslateX = translateX;
-                        dragStartTranslateY = translateY;
-                      } else if (e.touches.length === 2) {
-                        isDragging = false;
-                        pinchStartDist = Math.hypot(
-                          e.touches[0].clientX - e.touches[1].clientX,
-                          e.touches[0].clientY - e.touches[1].clientY
-                        );
-                        pinchStartScale = currentScale;
-                      }
-                    }, { passive: false });
-                    imageArea.addEventListener('touchmove', function(e) {
-                      if (e.touches.length === 1 && isDragging) {
-                        translateX = dragStartTranslateX + (e.touches[0].clientX - dragStartX);
-                        translateY = dragStartTranslateY + (e.touches[0].clientY - dragStartY);
-                        applyTransform();
-                        e.preventDefault();
-                      } else if (e.touches.length === 2) {
-                        const dist = Math.hypot(
-                          e.touches[0].clientX - e.touches[1].clientX,
-                          e.touches[0].clientY - e.touches[1].clientY
-                        );
-                        if (pinchStartDist > 0) {
-                          currentScale = Math.min(Math.max(pinchStartScale * (dist / pinchStartDist), 0.1), 10);
-                          applyTransform();
-                        }
-                        e.preventDefault();
-                      }
-                    }, { passive: false });
-                    imageArea.addEventListener('touchend', function() {
-                      isDragging = false;
-                      pinchStartDist = 0;
-                    });
-
-                    // ===== RUEDA DEL MOUSE PARA ZOOM =====
-                    imageArea.addEventListener('wheel', function(e) {
-                      e.preventDefault();
-                      const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
-                      // Zoom hacia el punto del cursor
-                      const rect = imageArea.getBoundingClientRect();
-                      const mouseX = e.clientX - rect.left - rect.width / 2;
-                      const mouseY = e.clientY - rect.top - rect.height / 2;
-                      const newScale = Math.min(Math.max(currentScale * zoomFactor, 0.1), 10);
-                      const scaleChange = newScale / currentScale;
-                      translateX = mouseX - scaleChange * (mouseX - translateX);
-                      translateY = mouseY - scaleChange * (mouseY - translateY);
-                      currentScale = newScale;
-                      applyTransform();
-                    }, { passive: false });
-
-                    // ===== DOBLE CLIC PARA AJUSTAR =====
-                    imageArea.addEventListener('dblclick', function(e) {
-                      fitToWindow();
-                    });
-
-                    // ===== BOTONES =====
-                    document.getElementById('btnZoomIn').addEventListener('click', zoomIn);
-                    document.getElementById('btnZoomOut').addEventListener('click', zoomOut);
-                    document.getElementById('btnFit').addEventListener('click', fitToWindow);
-                    document.getElementById('btnClosePipWindow').addEventListener('click', function() {
-                      window.close();
-                    });
-
-                    // ===== OPACIDAD =====
-                    opacitySlider.addEventListener('input', function() {
-                      img.style.opacity = this.value / 100;
-                    });
-
-                    // ===== TECLAS RÁPIDAS =====
-                    window.addEventListener('keydown', function(e) {
-                      if (e.key === '+' || e.key === '=') { zoomIn(); e.preventDefault(); }
-                      if (e.key === '-') { zoomOut(); e.preventDefault(); }
-                      if (e.key === '0') { fitToWindow(); e.preventDefault(); }
-                      if (e.key === 'Escape') { window.close(); }
-                    });
-
-                    // ===== INICIALIZAR =====
-                    img.addEventListener('load', function() {
-                      fitToWindow();
-                    });
-                    // Si la imagen ya cargó (caché)
-                    if (img.complete && img.naturalWidth > 0) {
-                      fitToWindow();
-                    } else {
-                      // Timeout por si acaso
-                      setTimeout(function() {
-                        if (img.naturalWidth > 0) fitToWindow();
-                      }, 300);
-                    }
-
-                    // ===== RECIBIR ACTUALIZACIONES DE IMAGEN =====
-                    window.addEventListener('message', function(e) {
-                      if (e.data && e.data.type === 'updateImage') {
-                        img.src = e.data.url;
-                        currentScale = 1;
-                        translateX = 0;
-                        translateY = 0;
-                        applyTransform();
-                        img.onload = function() { fitToWindow(); };
-                      }
-                    });
-                  \<\/script>
-                </body>
-                </html>`;
-            }
-
-            function updatePipImage(imageUrl) {
-                if (!pipWindow) return;
-                try {
-                    // Enviar mensaje a la ventana PiP para actualizar la imagen
-                    pipWindow.postMessage({ type: 'updateImage', url: imageUrl }, '*');
-                } catch (e) {
-                    // Si falla, cerramos y reabrimos
-                    console.warn('No se pudo actualizar la PiP, reintentando...');
-                    closePipWindow();
-                    openPipWindow(imageUrl);
-                }
-            }
-
-            async function openPipWindow(imageUrl) {
-                if (!imageUrl && !pipImageUrl) return;
-
-                const urlToUse = imageUrl || pipImageUrl;
-
-                if (supportsPip) {
-                    try {
-                        // Cerrar PiP existente si la hay
-                        if (pipWindow) {
-                            closePipWindow();
-                            // Pequeña pausa para que se cierre
-                            await new Promise(r => setTimeout(r, 300));
-                        }
-
-                        // Abrir nueva ventana PiP
-                        const win = await documentPictureInPicture.requestWindow({
-                            width: 500,
-                            height: 450,
-                        });
-
-                        // Escribir el HTML
-                        const pipHTML = generatePipHTML(urlToUse);
-                        win.document.open();
-                        win.document.write(pipHTML);
-                        win.document.close();
-
-                        // Guardar referencia
-                        pipWindow = win;
-
-                        // Detectar cierre
-                        win.addEventListener('pagehide', () => {
-                            pipWindow = null;
-                            updateUI();
-                            showToast('📋 Ventana flotante cerrada');
-                        });
-
-                        updateUI();
-                        showToast('🚀 Ventana flotante abierta (siempre visible)');
-
-                    } catch (err) {
-                        console.error('Error al abrir PiP:', err);
-                        showToast('⚠️ Error al abrir ventana PiP. ¿Tiene el navegador soporte?', true);
-                        // Fallback: abrir popup normal
-                        openPopupFallback(urlToUse);
-                    }
-                } else {
-                    // Fallback para navegadores sin soporte PiP
-                    openPopupFallback(urlToUse);
-                }
-            }
-
-            function openPopupFallback(imageUrl) {
-                if (pipWindow) {
-                    closePipWindow();
-                }
-                const width = 500;
-                const height = 450;
-                const left = (screen.width - width) / 2;
-                const top = (screen.height - height) / 2;
-                const popup = window.open(
-                    '',
-                    'imagen_flotante',
-                    `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=no,status=no`
-                );
-                if (popup) {
-                    const pipHTML = generatePipHTML(imageUrl);
-                    popup.document.open();
-                    popup.document.write(pipHTML);
-                    popup.document.close();
-                    pipWindow = popup;
-
-                    // Detectar cierre mediante polling
-                    const checkClosed = setInterval(() => {
-                        if (popup.closed) {
-                            clearInterval(checkClosed);
-                            pipWindow = null;
-                            updateUI();
-                            showToast('📋 Ventana flotante cerrada');
-                        }
-                    }, 500);
-
-                    updateUI();
-                    showToast(
-                        '⚠️ Modo popup (no always-on-top). Usa Chrome 116+ para PiP nativo. Puedes usar PowerToys para fijar la ventana.',
-                        false
-                    );
-                } else {
-                    showToast(
-                        '⚠️ No se pudo abrir la ventana. Permite los popups en tu navegador.',
-                        true
-                    );
-                }
-            }
-
-            function closePipWindow() {
-                if (pipWindow) {
-                    try {
-                        pipWindow.close();
-                    } catch (e) {
-                        // Ignorar errores al cerrar
-                    }
-                    pipWindow = null;
-                    updateUI();
-                }
-            }
-
-            // ============ EVENT LISTENERS ============
-
-            // Click en drop zone → abrir selector de archivo
-            dropZone.addEventListener('click', (e) => {
-                if (e.target === dropZone || e.target.closest('.drop-zone') === dropZone) {
-                    fileInput.click();
-                }
-            });
-
-            // Click en preview → abrir PiP
-            previewImgWrap.addEventListener('click', () => {
-                if (currentImageBlob && !pipWindow) {
-                    openPipWindow(pipImageUrl);
-                } else if (pipWindow) {
-                    // Traer la PiP al frente (focus)
-                    try {
-                        pipWindow.focus();
-                    } catch (e) {}
-                    showToast('👆 La ventana ya está abierta y visible');
-                }
-            });
-
-            // Selector de archivo
-            fileInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    loadImageFromFile(file);
-                }
-                fileInput.value = '';
-            });
-
-            // Drag and drop
-            dropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                dropZone.classList.add('drag-over');
-            });
-            dropZone.addEventListener('dragleave', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                dropZone.classList.remove('drag-over');
-            });
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                dropZone.classList.remove('drag-over');
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    const file = files[0];
-                    if (file.type.startsWith('image/')) {
-                        loadImageFromFile(file);
-                    } else {
-                        showToast('⚠️ El archivo no es una imagen válida', true);
-                    }
-                }
-                // También verificar si hay URL de imagen en el dataTransfer
-                const htmlData = e.dataTransfer.getData('text/html');
-                const textData = e.dataTransfer.getData('text/plain');
-                if (!files.length && textData) {
-                    const urlMatch = textData.match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i);
-                    if (urlMatch) {
-                        loadImageFromUrl(urlMatch[0]);
-                    }
-                }
-            });
-
-            // Pegar desde portapapeles
-            document.addEventListener('paste', (e) => {
-                // No interceptar si el foco está en un input/texto (excepto el body)
-                const activeEl = document.activeElement;
-                if (activeEl && activeEl !== document.body && activeEl !== dropZone &&
-                    (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable)) {
-                    return;
-                }
-
-                const items = e.clipboardData.items;
-                let imageFound = false;
-
-                for (const item of items) {
-                    if (item.type.startsWith('image/')) {
-                        e.preventDefault();
-                        const blob = item.getAsFile();
-                        if (blob) {
-                            loadImageFromBlob(blob);
-                            imageFound = true;
-                        }
-                        break;
-                    }
-                }
-
-                // Si no hay imagen, verificar si hay una URL de imagen como texto
-                if (!imageFound) {
-                    const text = e.clipboardData.getData('text/plain').trim();
-                    if (text && /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(text)) {
-                        e.preventDefault();
-                        loadImageFromUrl(text);
-                    }
-                }
-            });
-
-            // Botones
-            btnOpenPip.addEventListener('click', () => {
-                if (!currentImageBlob) return;
-                if (pipWindow) {
-                    // Actualizar la PiP existente
-                    updatePipImage(pipImageUrl);
-                    try { pipWindow.focus(); } catch (e) {}
-                    showToast('🔄 Ventana flotante actualizada');
-                } else {
-                    openPipWindow(pipImageUrl);
-                }
-            });
-
-            btnChange.addEventListener('click', (e) => {
-                e.stopPropagation();
-                fileInput.click();
-            });
-
-            btnClear.addEventListener('click', (e) => {
-                e.stopPropagation();
-                closePipWindow();
-                if (currentImageUrl) URL.revokeObjectURL(currentImageUrl);
-                if (pipImageUrl) URL.revokeObjectURL(pipImageUrl);
-                currentImageBlob = null;
-                currentImageUrl = null;
-                pipImageUrl = null;
-                previewImg.src = '';
-                updateUI();
-                showToast('🗑️ Imagen eliminada');
-            });
-
-            btnClosePip.addEventListener('click', () => {
-                closePipWindow();
-                showToast('📋 Ventana flotante cerrada');
-            });
-
-            // Tecla Escape para cerrar PiP
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && pipWindow) {
-                    closePipWindow();
-                    showToast('📋 Ventana flotante cerrada (Esc)');
-                }
-            });
-
-            // Cerrar PiP al recargar/cerrar la página
-            window.addEventListener('beforeunload', () => {
-                if (pipWindow) {
-                    try { pipWindow.close(); } catch (e) {}
-                }
-                if (currentImageUrl) URL.revokeObjectURL(currentImageUrl);
-                if (pipImageUrl) URL.revokeObjectURL(pipImageUrl);
-            });
-
-            // Detectar cierre de PiP por evento (para popups)
-            window.addEventListener('message', (e) => {
-                if (e.data && e.data.type === 'pipClosed') {
-                    pipWindow = null;
-                    updateUI();
-                }
-            });
-
-            // ============ INICIALIZACIÓN ============
-            updateUI();
-
-            // Mostrar mensaje si no hay soporte PiP
-            if (!supportsPip) {
-                console.warn(
-                    'Document Picture-in-Picture API no está disponible. Se usará popup alternativo. Para la mejor experiencia, usa Chrome 116+ o Edge.'
-                );
-                // No mostramos toast al inicio para no molestar, solo al intentar abrir
-            }
-
-            console.log('✅ Aplicación "Imagen Always On Top" lista');
-            console.log('   - Arrastra y suelta una imagen');
-            console.log('   - O pulsa Ctrl+V para pegar');
-            console.log('   - O haz clic en la zona para seleccionar archivo');
-            console.log('   - Luego haz clic en "Abrir ventana flotante"');
-            if (supportsPip) {
-                console.log('   🟢 API Picture-in-Picture disponible ✓');
+        function updateUI() {
+            const hasImage = !!currentImageBlob;
+            previewArea.classList.toggle('visible', hasImage);
+            btnOpenPip.disabled = !hasImage;
+            btnClosePip.style.display = pipWindow ? 'inline-flex' : 'none';
+            if (pipWindow) {
+                statusIndicator.className = 'status-indicator active';
+                statusDot.className = 'status-dot active';
+                statusText.textContent = `Ventana activa (${pipMode === 'web' ? 'web' : 'imagen'})`;
             } else {
-                console.log('   🟡 API Picture-in-Picture NO disponible - usando popup alternativo');
+                statusIndicator.className = 'status-indicator inactive';
+                statusDot.className = 'status-dot';
+                statusText.textContent = hasImage ? 'Imagen lista' : 'Sin contenido';
             }
-        })();
-    </script>
+        }
+
+        // Cargar imagen desde blob
+        function loadImageFromBlob(blob) {
+            if (currentImageUrl) URL.revokeObjectURL(currentImageUrl);
+            if (pipImageUrl) URL.revokeObjectURL(pipImageUrl);
+            currentImageBlob = blob;
+            currentImageUrl = URL.createObjectURL(blob);
+            pipImageUrl = URL.createObjectURL(blob);
+            previewImg.src = currentImageUrl;
+            updateUI();
+            if (pipWindow && pipMode === 'image') {
+                sendToPip({ type: 'updateImage', url: pipImageUrl });
+            }
+            showToast('✅ Imagen cargada');
+        }
+
+        function loadImageFromFile(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                showToast('⚠️ Archivo no válido', true);
+                return;
+            }
+            loadImageFromBlob(file);
+        }
+
+        async function loadImageFromUrl(url) {
+            try {
+                const resp = await fetch(url, { mode: 'cors' });
+                if (!resp.ok) throw new Error('No se pudo cargar');
+                const blob = await resp.blob();
+                if (!blob.type.startsWith('image/')) throw new Error('No es imagen');
+                loadImageFromBlob(blob);
+            } catch {
+                // Fallback con canvas
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.naturalWidth;
+                    canvas.height = img.naturalHeight;
+                    canvas.getContext('2d').drawImage(img, 0, 0);
+                    canvas.toBlob(blob => {
+                        if (blob) loadImageFromBlob(blob);
+                        else showToast('⚠️ Error al procesar', true);
+                    }, 'image/png');
+                };
+                img.onerror = () => showToast('⚠️ No se pudo cargar la imagen', true);
+                img.src = url;
+            }
+        }
+
+        // Enviar mensaje a la ventana PiP
+        function sendToPip(data) {
+            if (!pipWindow) return;
+            try { pipWindow.postMessage(data, '*'); } catch (e) {}
+        }
+
+        // Abrir PiP para imagen
+        async function openImagePip() {
+            if (!pipImageUrl) return;
+            await openPipWindow('image');
+        }
+
+        // Abrir PiP para web
+        async function openWebPip(url) {
+            if (!url) return;
+            // Guardar URL para reutilizar
+            urlInput.value = url;
+            await openPipWindow('web', url);
+        }
+
+        async function openPipWindow(mode, url = null) {
+            if (!supportsPip) {
+                openPopupFallback(mode, url);
+                return;
+            }
+            try {
+                if (pipWindow) {
+                    pipWindow.close();
+                    await new Promise(r => setTimeout(r, 300));
+                }
+                const win = await documentPictureInPicture.requestWindow({
+                    width: mode === 'web' ? 700 : 500,
+                    height: mode === 'web' ? 500 : 450,
+                });
+                pipWindow = win;
+                pipMode = mode;
+                const pipHTML = generatePipHTML(mode, url);
+                win.document.open();
+                win.document.write(pipHTML);
+                win.document.close();
+                win.addEventListener('pagehide', () => {
+                    pipWindow = null;
+                    updateUI();
+                    showToast('📋 Ventana cerrada');
+                });
+                updateUI();
+                showToast(`🚀 Ventana flotante abierta (${mode === 'web' ? 'web' : 'imagen'})`);
+            } catch (err) {
+                showToast('⚠️ Error al abrir PiP', true);
+                openPopupFallback(mode, url);
+            }
+        }
+
+        function openPopupFallback(mode, url = null) {
+            if (pipWindow) pipWindow.close();
+            const w = mode === 'web' ? 700 : 500;
+            const h = mode === 'web' ? 500 : 450;
+            const left = (screen.width - w) / 2;
+            const top = (screen.height - h) / 2;
+            const popup = window.open('', 'flotante', `width=${w},height=${h},left=${left},top=${top},resizable=yes`);
+            if (popup) {
+                pipWindow = popup;
+                pipMode = mode;
+                const html = generatePipHTML(mode, url);
+                popup.document.open();
+                popup.document.write(html);
+                popup.document.close();
+                const check = setInterval(() => {
+                    if (popup.closed) {
+                        clearInterval(check);
+                        pipWindow = null;
+                        updateUI();
+                        showToast('📋 Ventana cerrada');
+                    }
+                }, 500);
+                updateUI();
+                showToast('⚠️ Modo popup (no siempre encima). Usa Chrome 116+ para PiP nativo.');
+            } else {
+                showToast('⚠️ Permite los popups', true);
+            }
+        }
+
+        function generatePipHTML(mode, initialUrl = null) {
+            const imageUrlPlaceholder = pipImageUrl || '';
+            const webUrl = initialUrl || urlInput.value || 'about:blank';
+            return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ventana flotante</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:100%; height:100%; overflow:hidden; font-family:'Segoe UI',system-ui; background:#1a1a1a; user-select:none; }
+    .bg-checker {
+      position:absolute; inset:0; z-index:0; background-image:
+        linear-gradient(45deg,#333 25%,transparent 25%),
+        linear-gradient(-45deg,#333 25%,transparent 25%),
+        linear-gradient(45deg,transparent 75%,#333 75%),
+        linear-gradient(-45deg,transparent 75%,#333 75%);
+      background-size:24px 24px; background-position:0 0,0 12px,12px -12px,-12px 0; opacity:0.5;
+    }
+    .main-container { position:relative; z-index:1; width:100%; height:100%; display:flex; flex-direction:column; }
+    /* Modo imagen */
+    #imageMode { display:flex; flex-direction:column; height:100%; }
+    .image-area { flex:1; overflow:hidden; cursor:grab; position:relative; display:flex; align-items:center; justify-content:center; }
+    #pipImage { display:block; transform-origin:center; pointer-events:none; max-width:none; max-height:none; }
+    /* Modo web */
+    #webMode { display:flex; flex-direction:column; height:100%; }
+    .web-toolbar {
+      display:flex; align-items:center; gap:6px; padding:8px 10px;
+      background:rgba(30,30,40,0.95); border-bottom:1px solid rgba(255,255,255,0.08);
+      flex-wrap:wrap; z-index:10;
+    }
+    .web-toolbar input { flex:1; min-width:120px; padding:6px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.15); background:rgba(0,0,0,0.4); color:#ddd; font-family:inherit; font-size:12px; }
+    .web-toolbar button {
+      width:28px; height:28px; border-radius:6px; border:1px solid rgba(255,255,255,0.2);
+      background:rgba(255,255,255,0.08); color:#ccc; cursor:pointer; font-size:14px;
+      display:flex; align-items:center; justify-content:center; transition:0.2s;
+    }
+    .web-toolbar button:hover { background:rgba(255,255,255,0.2); color:#fff; }
+    iframe { flex:1; border:none; width:100%; background:#fff; }
+    .hidden { display:none !important; }
+    /* Controles imagen (heredados) */
+    .controls { display:flex; align-items:center; gap:6px; padding:8px 10px; background:rgba(30,30,40,0.95); border-top:1px solid rgba(255,255,255,0.08); flex-wrap:wrap; justify-content:center; }
+    .ctrl-btn { width:32px; height:32px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); color:#ddd; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:0.2s; }
+    .ctrl-btn:hover { background:rgba(255,255,255,0.15); color:#fff; }
+    .zoom-label { font-size:11px; color:#aaa; min-width:40px; text-align:center; }
+    #opacitySlider { width:70px; accent-color:#e94560; }
+    .close-btn { background:rgba(233,68,96,0.2); border-color:rgba(233,68,96,0.4); color:#f87171; font-weight:bold; }
+    .close-btn:hover { background:rgba(233,68,96,0.4); color:#fff; }
+  </style>
+</head>
+<body>
+  <div class="bg-checker"></div>
+  <div class="main-container">
+    <!-- Modo imagen -->
+    <div id="imageMode" class="${mode === 'image' ? '' : 'hidden'}">
+      <div class="image-area" id="imageArea">
+        <img id="pipImage" src="${mode === 'image' ? imageUrlPlaceholder : ''}" draggable="false">
+      </div>
+      <div class="controls">
+        <button class="ctrl-btn" id="btnZoomOut">−</button>
+        <span class="zoom-label" id="zoomLabel">100%</span>
+        <button class="ctrl-btn" id="btnZoomIn">+</button>
+        <button class="ctrl-btn" id="btnFit" style="width:auto;padding:0 8px;font-size:12px;">⊞ Ajustar</button>
+        <span style="width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 4px;"></span>
+        <span style="font-size:10px;color:#999;">Opac.</span>
+        <input type="range" id="opacitySlider" min="10" max="100" value="100">
+        <span style="width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 4px;"></span>
+        <button class="ctrl-btn close-btn" id="btnCloseImage">✕</button>
+      </div>
+    </div>
+    <!-- Modo web -->
+    <div id="webMode" class="${mode === 'web' ? '' : 'hidden'}">
+      <div class="web-toolbar">
+        <input type="text" id="webUrlInput" value="${webUrl}" placeholder="https://...">
+        <button id="btnGo" title="Ir">→</button>
+        <button id="btnReload" title="Recargar">↻</button>
+        <button class="close-btn" id="btnCloseWeb" style="width:28px;height:28px;border-radius:6px;">✕</button>
+      </div>
+      <iframe id="webIframe" src="${webUrl}" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+    </div>
+  </div>
+  <script>
+    // Estado imagen
+    const img = document.getElementById('pipImage');
+    const imageArea = document.getElementById('imageArea');
+    const zoomLabel = document.getElementById('zoomLabel');
+    const opacitySlider = document.getElementById('opacitySlider');
+    let scale = 1, tx = 0, ty = 0, dragging = false, startX, startY, startTx, startTy;
+
+    function applyTransform() {
+      if (!img) return;
+      img.style.transform = \`translate(\${tx}px,\${ty}px) scale(\${scale})\`;
+      if (zoomLabel) zoomLabel.textContent = Math.round(scale * 100) + '%';
+    }
+    function fitToWindow() {
+      if (!img || !imageArea) return;
+      const aw = imageArea.clientWidth, ah = imageArea.clientHeight;
+      const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+      if (iw && ih) {
+        scale = Math.min((aw*0.9)/iw, (ah*0.9)/ih, 1);
+        tx = ty = 0;
+        applyTransform();
+      }
+    }
+    if (img) {
+      img.addEventListener('load', fitToWindow);
+      if (img.complete) fitToWindow();
+    }
+    if (imageArea) {
+      imageArea.addEventListener('mousedown', e => {
+        if (e.target === img || e.target === imageArea) {
+          dragging = true; startX = e.clientX; startY = e.clientY; startTx = tx; startTy = ty;
+          e.preventDefault();
+        }
+      });
+      window.addEventListener('mousemove', e => {
+        if (!dragging) return;
+        tx = startTx + (e.clientX - startX); ty = startTy + (e.clientY - startY);
+        applyTransform();
+      });
+      window.addEventListener('mouseup', () => { dragging = false; });
+      imageArea.addEventListener('wheel', e => {
+        e.preventDefault();
+        const rect = imageArea.getBoundingClientRect();
+        const mx = e.clientX - rect.left - rect.width/2, my = e.clientY - rect.top - rect.height/2;
+        const factor = e.deltaY < 0 ? 1.1 : 0.9;
+        const newScale = Math.min(Math.max(scale * factor, 0.1), 10);
+        const change = newScale / scale;
+        tx = mx - change * (mx - tx); ty = my - change * (my - ty);
+        scale = newScale;
+        applyTransform();
+      }, {passive:false});
+      imageArea.addEventListener('dblclick', fitToWindow);
+    }
+    document.getElementById('btnZoomIn')?.addEventListener('click', () => { scale = Math.min(scale*1.25,10); applyTransform(); });
+    document.getElementById('btnZoomOut')?.addEventListener('click', () => { scale = Math.max(scale/1.25,0.1); applyTransform(); });
+    document.getElementById('btnFit')?.addEventListener('click', fitToWindow);
+    document.getElementById('opacitySlider')?.addEventListener('input', e => { if(img) img.style.opacity = e.target.value/100; });
+    document.getElementById('btnCloseImage')?.addEventListener('click', () => window.close());
+    // Modo web
+    const webIframe = document.getElementById('webIframe');
+    const webUrlInput = document.getElementById('webUrlInput');
+    document.getElementById('btnGo')?.addEventListener('click', () => {
+      if (webUrlInput && webIframe) webIframe.src = webUrlInput.value;
+    });
+    document.getElementById('btnReload')?.addEventListener('click', () => {
+      if (webIframe) webIframe.src = webIframe.src;
+    });
+    document.getElementById('btnCloseWeb')?.addEventListener('click', () => window.close());
+    // Mensajes desde la página principal
+    window.addEventListener('message', e => {
+      if (e.data?.type === 'updateImage') {
+        document.getElementById('imageMode')?.classList.remove('hidden');
+        document.getElementById('webMode')?.classList.add('hidden');
+        if (img) { img.src = e.data.url; scale=1; tx=ty=0; applyTransform(); }
+      } else if (e.data?.type === 'loadUrl') {
+        document.getElementById('imageMode')?.classList.add('hidden');
+        document.getElementById('webMode')?.classList.remove('hidden');
+        if (webUrlInput && webIframe) {
+          webUrlInput.value = e.data.url;
+          webIframe.src = e.data.url;
+        }
+      }
+    });
+    // Teclas
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') window.close();
+      if (document.getElementById('imageMode') && !document.getElementById('imageMode').classList.contains('hidden')) {
+        if (e.key === '+' || e.key === '=') { scale = Math.min(scale*1.25,10); applyTransform(); e.preventDefault(); }
+        if (e.key === '-') { scale = Math.max(scale/1.25,0.1); applyTransform(); e.preventDefault(); }
+        if (e.key === '0') { fitToWindow(); e.preventDefault(); }
+      }
+    });
+  <\/script>
+</body>
+</html>`;
+        }
+
+        function closePipWindow() {
+            if (pipWindow) {
+                try { pipWindow.close(); } catch(e) {}
+                pipWindow = null;
+                updateUI();
+            }
+        }
+
+        // Eventos
+        dropZone.addEventListener('click', (e) => {
+            if (e.target === dropZone || e.target.closest('.drop-zone') === dropZone) fileInput.click();
+        });
+        previewImgWrap.addEventListener('click', () => {
+            if (currentImageBlob && !pipWindow) openImagePip();
+            else if (pipWindow && pipMode === 'image') {
+                try { pipWindow.focus(); } catch(e) {}
+                showToast('👆 La ventana ya está abierta');
+            }
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files[0]) loadImageFromFile(e.target.files[0]);
+            fileInput.value = '';
+        });
+        dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); });
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length) {
+                const f = e.dataTransfer.files[0];
+                if (f.type.startsWith('image/')) loadImageFromFile(f);
+                else showToast('⚠️ Solo imágenes', true);
+            } else {
+                const text = e.dataTransfer.getData('text/plain').trim();
+                if (text) handlePastedText(text);
+            }
+        });
+        document.addEventListener('paste', e => {
+            const active = document.activeElement;
+            if (active && active !== document.body && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) return;
+            const items = e.clipboardData.items;
+            for (const item of items) {
+                if (item.type.startsWith('image/')) {
+                    e.preventDefault();
+                    loadImageFromBlob(item.getAsFile());
+                    return;
+                }
+            }
+            const text = e.clipboardData.getData('text/plain').trim();
+            if (text) handlePastedText(text);
+        });
+
+        function handlePastedText(text) {
+            if (/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(text)) {
+                loadImageFromUrl(text);
+            } else if (/^https?:\/\/.+/i.test(text)) {
+                urlInput.value = text;
+                showToast('🔗 URL pegada en el campo web. Pulsa "Abrir web flotante"');
+            }
+        }
+
+        btnOpenPip.addEventListener('click', () => {
+            if (currentImageBlob) openImagePip();
+        });
+        btnChange.addEventListener('click', (e) => { e.stopPropagation(); fileInput.click(); });
+        btnClear.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closePipWindow();
+            if (currentImageUrl) URL.revokeObjectURL(currentImageUrl);
+            if (pipImageUrl) URL.revokeObjectURL(pipImageUrl);
+            currentImageBlob = null; currentImageUrl = null; pipImageUrl = null;
+            previewImg.src = '';
+            updateUI();
+            showToast('🗑️ Imagen eliminada');
+        });
+        btnClosePip.addEventListener('click', closePipWindow);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && pipWindow) closePipWindow(); });
+        window.addEventListener('beforeunload', () => {
+            if (pipWindow) try { pipWindow.close(); } catch(e) {}
+            if (currentImageUrl) URL.revokeObjectURL(currentImageUrl);
+            if (pipImageUrl) URL.revokeObjectURL(pipImageUrl);
+        });
+
+        // Botón de URL
+        btnOpenUrl.addEventListener('click', () => {
+            const url = urlInput.value.trim();
+            if (!url) { showToast('⚠️ Escribe una URL', true); return; }
+            if (!/^https?:\/\//i.test(url)) {
+                showToast('⚠️ La URL debe empezar con http:// o https://', true);
+                return;
+            }
+            openWebPip(url);
+        });
+        // Enter en el campo URL
+        urlInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') btnOpenUrl.click();
+        });
+
+        updateUI();
+        console.log('✅ Aplicación lista: imagen + web flotante');
+    })();
+</script>
 </body>
 </html>
