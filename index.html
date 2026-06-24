@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imagen/Web Always On Top (corregido)</title>
+    <title>Imagen/Web Always On Top (web directa)</title>
     <style>
         :root {
             --bg: #1a1a2e;
@@ -140,9 +140,9 @@
         </div>
     </div>
 
-    <div class="section-title">🌐 Abrir página web</div>
+    <div class="section-title">🌐 Abrir página web (carga directa, sin iframes)</div>
     <div class="url-input-group">
-        <input type="text" id="urlInput" placeholder="https://ejemplo.com">
+        <input type="text" id="urlInput" placeholder="https://es.wikipedia.org">
         <button class="btn btn-accent" id="btnOpenUrl">📌 Abrir web flotante</button>
     </div>
 
@@ -179,7 +179,7 @@
     let currentImageUrl = null;
     let pipImageUrl = null;
     let pipWindow = null;
-    let pipMode = 'image'; // 'image' o 'web'
+    let pipMode = 'image';
     let toastTimer = null;
 
     const supportsPip = ('documentPictureInPicture' in window);
@@ -228,11 +228,9 @@
         loadImageFromBlob(file);
     }
 
-    // Carga segura de imagen desde URL
     async function loadImageFromUrl(url) {
         showToast('⏳ Cargando imagen...');
         try {
-            // Intento con fetch + blob
             const resp = await fetch(url, { mode: 'cors' });
             if (!resp.ok) throw new Error('Respuesta no válida');
             const blob = await resp.blob();
@@ -240,7 +238,6 @@
             loadImageFromBlob(blob);
         } catch (e) {
             console.warn('Fetch falló, intentando método canvas', e);
-            // Fallback con <img> + canvas
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.onload = () => {
@@ -276,15 +273,22 @@
                 await new Promise(r => setTimeout(r, 300));
             }
             const win = await documentPictureInPicture.requestWindow({
-                width: mode === 'web' ? 700 : 500,
-                height: mode === 'web' ? 500 : 450,
+                width: mode === 'web' ? 800 : 500,
+                height: mode === 'web' ? 600 : 450,
             });
             pipWindow = win;
             pipMode = mode;
-            const html = generatePipHTML(mode, url);
-            win.document.open();
-            win.document.write(html);
-            win.document.close();
+
+            if (mode === 'image') {
+                const html = generateImagePipHTML();
+                win.document.open();
+                win.document.write(html);
+                win.document.close();
+            } else if (mode === 'web') {
+                // Cargar directamente la URL en la ventana
+                win.location.href = url;
+            }
+
             win.addEventListener('pagehide', () => {
                 pipWindow = null;
                 updateUI();
@@ -301,21 +305,28 @@
 
     function openPopupFallback(mode, url = null) {
         if (pipWindow) try { pipWindow.close(); } catch(e) {}
-        const w = mode === 'web' ? 700 : 500;
-        const h = mode === 'web' ? 500 : 450;
+        const w = mode === 'web' ? 800 : 500;
+        const h = mode === 'web' ? 600 : 450;
         const left = (screen.width - w) / 2;
         const top = (screen.height - h) / 2;
-        const popup = window.open('', 'flotante', `width=${w},height=${h},left=${left},top=${top},resizable=yes`);
+        let popup;
+        if (mode === 'web') {
+            popup = window.open(url, 'flotante', `width=${w},height=${h},left=${left},top=${top},resizable=yes`);
+        } else {
+            popup = window.open('', 'flotante', `width=${w},height=${h},left=${left},top=${top},resizable=yes`);
+            if (popup) {
+                const html = generateImagePipHTML();
+                popup.document.open();
+                popup.document.write(html);
+                popup.document.close();
+            }
+        }
         if (!popup) {
             showToast('⚠️ Popup bloqueado. Permite ventanas emergentes.', true);
             return;
         }
         pipWindow = popup;
         pipMode = mode;
-        const html = generatePipHTML(mode, url);
-        popup.document.open();
-        popup.document.write(html);
-        popup.document.close();
         const check = setInterval(() => {
             if (popup.closed) {
                 clearInterval(check);
@@ -328,15 +339,15 @@
         showToast('⚠️ Modo popup (no siempre encima). Usa Chrome 116+ para PiP real.');
     }
 
-    function generatePipHTML(mode, url = null) {
+    // Generar solo el HTML para imagen (ya no necesitamos el modo web en HTML)
+    function generateImagePipHTML() {
         const imgSrc = pipImageUrl || '';
-        const webUrl = url || urlInput.value.trim() || 'about:blank';
         return `<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flotante</title>
+<title>Imagen flotante</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;font-family:'Segoe UI',system-ui;background:#1a1a1a}
@@ -346,17 +357,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Segoe UI',system-u
   background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0;opacity:0.5
 }
 .main-container{position:relative;z-index:1;width:100%;height:100%;display:flex;flex-direction:column}
-/* Imagen */
-#imageMode{display:flex;flex-direction:column;height:100%}
 .image-area{flex:1;overflow:hidden;cursor:grab;position:relative;display:flex;align-items:center;justify-content:center}
 #pipImage{display:block;transform-origin:center;pointer-events:none;max-width:none;max-height:none}
-/* Web */
-#webMode{display:flex;flex-direction:column;height:100%}
-.web-toolbar{display:flex;gap:6px;padding:8px;background:rgba(30,30,40,0.95);border-bottom:1px solid rgba(255,255,255,0.08);flex-wrap:wrap}
-.web-toolbar input{flex:1;min-width:120px;padding:6px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:rgba(0,0,0,0.4);color:#ddd;font-size:12px}
-.web-toolbar button{width:28px;height:28px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#ccc;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
-iframe{flex:1;border:none;width:100%;background:#fff}
-.hidden{display:none!important}
 .controls{display:flex;align-items:center;gap:6px;padding:8px;background:rgba(30,30,40,0.95);border-top:1px solid rgba(255,255,255,0.08);flex-wrap:wrap;justify-content:center}
 .ctrl-btn{width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#ddd;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:0.2s}
 .ctrl-btn:hover{background:rgba(255,255,255,0.15);color:#fff}
@@ -368,34 +370,22 @@ iframe{flex:1;border:none;width:100%;background:#fff}
 <body>
 <div class="bg-checker"></div>
 <div class="main-container">
-  <div id="imageMode" class="${mode === 'image' ? '' : 'hidden'}">
-    <div class="image-area" id="imageArea">
-      <img id="pipImage" src="${imgSrc}" draggable="false">
-    </div>
-    <div class="controls">
-      <button class="ctrl-btn" id="btnZoomOut">−</button>
-      <span class="zoom-label" id="zoomLabel">100%</span>
-      <button class="ctrl-btn" id="btnZoomIn">+</button>
-      <button class="ctrl-btn" id="btnFit" style="width:auto;padding:0 8px;font-size:12px;">⊞ Ajustar</button>
-      <span style="width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 4px;"></span>
-      <span style="font-size:10px;color:#999;">Opac.</span>
-      <input type="range" id="opacitySlider" min="10" max="100" value="100">
-      <span style="width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 4px;"></span>
-      <button class="ctrl-btn close-btn" id="btnCloseImage">✕</button>
-    </div>
+  <div class="image-area" id="imageArea">
+    <img id="pipImage" src="${imgSrc}" draggable="false">
   </div>
-  <div id="webMode" class="${mode === 'web' ? '' : 'hidden'}">
-    <div class="web-toolbar">
-      <input type="text" id="webUrlInput" value="${webUrl}">
-      <button id="btnGo">→</button>
-      <button id="btnReload">↻</button>
-      <button class="close-btn" id="btnCloseWeb">✕</button>
-    </div>
-    <iframe id="webIframe" src="${webUrl}" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+  <div class="controls">
+    <button class="ctrl-btn" id="btnZoomOut">−</button>
+    <span class="zoom-label" id="zoomLabel">100%</span>
+    <button class="ctrl-btn" id="btnZoomIn">+</button>
+    <button class="ctrl-btn" id="btnFit" style="width:auto;padding:0 8px;font-size:12px;">⊞ Ajustar</button>
+    <span style="width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 4px;"></span>
+    <span style="font-size:10px;color:#999;">Opac.</span>
+    <input type="range" id="opacitySlider" min="10" max="100" value="100">
+    <span style="width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 4px;"></span>
+    <button class="ctrl-btn close-btn" id="btnCloseImage">✕</button>
   </div>
 </div>
 <script>
-  // Control de imagen
   const img = document.getElementById('pipImage');
   const imageArea = document.getElementById('imageArea');
   const zoomLabel = document.getElementById('zoomLabel');
@@ -451,36 +441,11 @@ iframe{flex:1;border:none;width:100%;background:#fff}
   document.getElementById('btnFit')?.addEventListener('click', fitToWindow);
   opacitySlider?.addEventListener('input', e => { if(img) img.style.opacity = e.target.value/100; });
   document.getElementById('btnCloseImage')?.addEventListener('click', () => window.close());
-
-  // Control de web
-  const webIframe = document.getElementById('webIframe');
-  const webUrlInput = document.getElementById('webUrlInput');
-  document.getElementById('btnGo')?.addEventListener('click', () => {
-    if (webUrlInput && webIframe) webIframe.src = webUrlInput.value;
-  });
-  document.getElementById('btnReload')?.addEventListener('click', () => {
-    if (webIframe) webIframe.src = webIframe.src;
-  });
-  document.getElementById('btnCloseWeb')?.addEventListener('click', () => window.close());
-
-  // Recibir mensajes
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') window.close(); });
   window.addEventListener('message', e => {
-    if (e.data?.type === 'updateImage') {
-      document.getElementById('imageMode')?.classList.remove('hidden');
-      document.getElementById('webMode')?.classList.add('hidden');
-      if (img) { img.src = e.data.url; scale=1; tx=ty=0; applyTransform(); }
-    } else if (e.data?.type === 'loadUrl') {
-      document.getElementById('imageMode')?.classList.add('hidden');
-      document.getElementById('webMode')?.classList.remove('hidden');
-      if (webUrlInput && webIframe) {
-        webUrlInput.value = e.data.url;
-        webIframe.src = e.data.url;
-      }
+    if (e.data?.type === 'updateImage' && img) {
+      img.src = e.data.url; scale=1; tx=ty=0; applyTransform();
     }
-  });
-
-  window.addEventListener('keydown', e => {
-    if (e.key === 'Escape') window.close();
   });
 <\/script>
 </body>
@@ -495,7 +460,6 @@ iframe{flex:1;border:none;width:100%;background:#fff}
         }
     }
 
-    // Manejo de texto pegado o arrastrado
     function handleTextInput(text) {
         text = text.trim();
         if (!text) return;
@@ -578,7 +542,7 @@ iframe{flex:1;border:none;width:100%;background:#fff}
     urlInput.addEventListener('keypress', e => { if (e.key === 'Enter') btnOpenUrl.click(); });
 
     updateUI();
-    console.log('✅ Aplicación lista. Si ves errores, copia el mensaje de la consola.');
+    console.log('✅ Aplicación lista. Modo web: carga directa de página, sin iframes.');
 })();
 </script>
 </body>
